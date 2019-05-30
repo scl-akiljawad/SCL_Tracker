@@ -23,7 +23,7 @@ public class AppService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Update update = (Update)intent.getParcelableExtra("Parcelable");
+        Update update = intent.getParcelableExtra("Parcelable");
         AppConstant app = new AppConstant();
         Log.i("service :","working");
         app.execute(update);
@@ -32,13 +32,13 @@ public class AppService extends Service {
         PendingIntent pendingIntent = PendingIntent.getActivity(this,0,notificationChannel,0);
         Notification notification = new NotificationCompat.Builder(this,CHANNEL_ID)
                 .setContentTitle(update.getPhone())
-                .setContentText("Latitude :"+ update.getLatitude() +" Longitude :"+update.getLongitude())
+                .setContentText("Location :"+update.getGeo_location())
                 .setSmallIcon(R.drawable.ic_android)
                 .setContentIntent(pendingIntent)
                 .setContentIntent(pendingIntent)
                 .build();
         Log.i("SERVICE App:","Notification");
-
+//"Latitude :"+ update.getLatitude() +" Longitude :"+update.getLongitude()+
         startForeground(1,notification);
         return START_NOT_STICKY;
     }

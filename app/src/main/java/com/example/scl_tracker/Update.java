@@ -8,6 +8,15 @@ public class Update implements Parcelable {
     String phone;
     double latitude;
     double longitude;
+    String geo_location;
+
+    public String getGeo_location() {
+        return geo_location;
+    }
+
+    public void setGeo_location(String geo_location) {
+        this.geo_location = geo_location;
+    }
 
     public String getUrl() {
         return url;
@@ -46,12 +55,15 @@ public class Update implements Parcelable {
         phone=in.readString();
         latitude=in.readDouble();
         longitude=in.readDouble();
+        geo_location=in.readString();
+
     }
-    Update(String url,String phone,Double latitude,Double longitude){
+    Update(String url,String phone,Double latitude,Double longitude,String geo_location){
         this.url=url;
         this.latitude=latitude;
         this.longitude=longitude;
         this.phone=phone;
+        this.geo_location=geo_location;
     }
 
     public static final Creator<Update> CREATOR = new Creator<Update>() {
@@ -77,6 +89,7 @@ public class Update implements Parcelable {
         dest.writeString(phone);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
+        dest.writeString(geo_location);
 
     }
 }

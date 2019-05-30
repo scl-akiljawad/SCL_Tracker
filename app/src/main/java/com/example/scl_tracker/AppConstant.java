@@ -35,6 +35,7 @@ public class AppConstant extends AsyncTask<Update,Void,Void> {
             jsonObject.put("phone", params[0].phone);
             jsonObject.put("lat", params[0].latitude);
             jsonObject.put("lon", params[0].longitude);
+            jsonObject.put("geolocation",params[0].geo_location);
             Log.i("JSON", jsonObject.toString());
             Thread.sleep(2000);
             DataOutputStream os = new DataOutputStream(conn.getOutputStream());

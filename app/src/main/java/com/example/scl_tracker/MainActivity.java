@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements TaskCompleted{
     LocationManager locationManager;
     double latitude,longitude;
     private boolean flag=false;
+    public static final String PHONE = "01712604316";
     Handler handler = new Handler();
     Runnable timedTask = new Runnable() {
         @Override
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements TaskCompleted{
     private void sendMessageToAdmin() {
         String url = "http://103.15.245.78:8023/scl_tracker_api/public/api/get_location";
         AppConstantLocationFetch appConstantLocationFetch = new AppConstantLocationFetch(this);
-        final GetUserInfo params = new GetUserInfo(url,"01712604316");
+        final GetUserInfo params = new GetUserInfo(url,PHONE);
         appConstantLocationFetch.execute(params);
     }
 
@@ -103,13 +104,21 @@ public class MainActivity extends AppCompatActivity implements TaskCompleted{
                 @Override
                 public void onLocationChanged(Location location) {
                     if(flag){
+                        String geolocation="";
                         Log.i("ifelse","ifelse");
                         latitude = location.getLatitude();
                         longitude = location.getLongitude();
+                        Geocoder geocoder = new Geocoder(context);
+                        try {
+                            List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
+                            geolocation = addressList.get(0).getSubLocality() + "," + addressList.get(0).getLocality();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         Log.i("JSN", String.valueOf(latitude));
                         Log.i("JSN", String.valueOf(longitude));
                         String url = "http://103.15.245.78:8023/scl_tracker_api/public/api/update_location";
-                        Update params = new Update(url,"01712604316",latitude,longitude);
+                        Update params = new Update(url,PHONE,latitude,longitude,geolocation);
                         Intent serviceIntent = new Intent(MainActivity.this,AppService.class);
                         serviceIntent.putExtra("Parcelable",params);
                         //handler.postDelayed(timedTask,10000);
@@ -144,12 +153,20 @@ public class MainActivity extends AppCompatActivity implements TaskCompleted{
                 @Override
                 public void onLocationChanged(Location location) {
                     if(flag){
+                        String geolocation="";
                         latitude = location.getLatitude();
                         longitude = location.getLongitude();
                         Log.i("Json", String.valueOf(latitude));
                         Log.i("Json", String.valueOf(longitude));
+                        Geocoder geocoder = new Geocoder(context);
+                        try {
+                            List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
+                            geolocation = addressList.get(0).getSubLocality() + "," + addressList.get(0).getLocality();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         String url = "http://103.15.245.78:8023/scl_tracker_api/public/api/update_location";
-                        Update params = new Update(url,"01712604316",latitude,longitude);
+                        Update params = new Update(url,PHONE,latitude,longitude,geolocation);
                         Intent serviceIntent = new Intent(getApplicationContext(),AppService.class);
                         serviceIntent.putExtra("Parcelable",params);
                         //handler.postDelayed(timedTask,10000);
@@ -186,6 +203,8 @@ public class MainActivity extends AppCompatActivity implements TaskCompleted{
     @Override
     public void onTaskComplete(GetUserLocation getUserLocation) {
         Log.i("JSON","OnTaskCompleted");
+        Log.i("PHONE :",getUserLocation.getPhone());
+
         String messageToSend = "Current Position of User ID "+getUserLocation.getId()+
                 "("+getUserLocation.getPhone()+")"+" is "+getUserLocation.getGeolocation()+
                 "(Latitude :"+getUserLocation.getLat()+" , Longitude :"+getUserLocation.getLon()+")";

@@ -1,9 +1,19 @@
 package com.example.scl_tracker;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,6 +46,7 @@ public class AppConstantLocationFetch extends AsyncTask<GetUserInfo,Void,GetUser
 
     @Override
     protected void onPostExecute(GetUserLocation getUserLocation) {
+        Log.i("GetUserLocation :",getUserLocation.getPhone());
         mCallBack.onTaskComplete(getUserLocation);
     }
 
@@ -68,18 +79,23 @@ public class AppConstantLocationFetch extends AsyncTask<GetUserInfo,Void,GetUser
             inputStream.close();
             result = sb.toString();
 
-            JSONObject jsonObject = new JSONObject(result);
-            int id = jsonObject.getInt("id");
-            String phone = jsonObject.getString("phone");
-            double lat = jsonObject.getDouble("lat");
-            double lon = jsonObject.getDouble("lon");
-            String geolocation = jsonObject.getString("geolocation");
-            String created_at = jsonObject.getString("created_at");
-            String status = jsonObject.getString("status");
-            GetUserLocation getUserLocation=new GetUserLocation(id,phone,lat,lon,geolocation,created_at,status);
-            Log.i("JSON", String.valueOf(getUserLocation.getLat()));
-            Log.i("LINE", result);
-            return getUserLocation;
+
+            JSONArray jsonArray = new JSONArray(result);
+            for(int i=0;i<jsonArray.length();i++){
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                int id = jsonObject.getInt("id");
+                String phone = jsonObject.getString("phone");
+                double lat = jsonObject.getDouble("lat");
+                double lon = jsonObject.getDouble("lon");
+                String geolocation = jsonObject.getString("geolocation");
+                String created_at = jsonObject.getString("created_at");
+                String status = jsonObject.getString("status");
+                GetUserLocation getUserLocation=new GetUserLocation(id,phone,lat,lon,geolocation,created_at,status);
+                return getUserLocation;
+            }
+
+            //Log.i("JSON", String.valueOf(getUserLocation.getLat()));
+            //Log.i("LINE", result);
 
 
         } catch (MalformedURLException e) {
