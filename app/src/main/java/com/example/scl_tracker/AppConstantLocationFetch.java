@@ -90,8 +90,7 @@ public class AppConstantLocationFetch extends AsyncTask<GetUserInfo,Void,GetUser
                 String geolocation = jsonObject.getString("geolocation");
                 String created_at = jsonObject.getString("created_at");
                 String status = jsonObject.getString("status");
-                GetUserLocation getUserLocation=new GetUserLocation(id,phone,lat,lon,geolocation,created_at,status);
-                return getUserLocation;
+                return new GetUserLocation(id,phone,lat,lon,geolocation,created_at,status);
             }
 
             //Log.i("JSON", String.valueOf(getUserLocation.getLat()));

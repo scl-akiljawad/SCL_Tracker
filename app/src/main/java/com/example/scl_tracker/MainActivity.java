@@ -38,6 +38,12 @@ public class MainActivity extends AppCompatActivity implements TaskCompleted{
     double latitude,longitude;
     private boolean flag=false;
     public static final String PHONE = "01712604316";
+    public static final String ADMIN_PHONE = "01872796633";
+    public static final String UPDATE_URL = "http://103.15.245.78:8023/scl_tracker_api/public/api/update_location";
+    public static final String GET_USER_LOCATION_URL = "http://103.15.245.78:8023/scl_tracker_api/public/api/get_location";
+    public static final String GET_ALL_USER_LOCATION_URL = "http://103.15.245.78:8023/scl_tracker_api/public/api/user_list";
+    public static final String INSERT_USER_URL = "http://103.15.245.78:8023/scl_tracker_api/public/api/insert_user";
+
     Handler handler = new Handler();
     Runnable timedTask = new Runnable() {
         @Override
@@ -84,9 +90,8 @@ public class MainActivity extends AppCompatActivity implements TaskCompleted{
     }
 
     private void sendMessageToAdmin() {
-        String url = "http://103.15.245.78:8023/scl_tracker_api/public/api/get_location";
         AppConstantLocationFetch appConstantLocationFetch = new AppConstantLocationFetch(this);
-        final GetUserInfo params = new GetUserInfo(url,PHONE);
+        final GetUserInfo params = new GetUserInfo(GET_USER_LOCATION_URL,PHONE);
         appConstantLocationFetch.execute(params);
     }
 
@@ -117,8 +122,7 @@ public class MainActivity extends AppCompatActivity implements TaskCompleted{
                         }
                         Log.i("JSN", String.valueOf(latitude));
                         Log.i("JSN", String.valueOf(longitude));
-                        String url = "http://103.15.245.78:8023/scl_tracker_api/public/api/update_location";
-                        Update params = new Update(url,PHONE,latitude,longitude,geolocation);
+                        Update params = new Update(UPDATE_URL,PHONE,latitude,longitude,geolocation);
                         Intent serviceIntent = new Intent(MainActivity.this,AppService.class);
                         serviceIntent.putExtra("Parcelable",params);
                         //handler.postDelayed(timedTask,10000);
@@ -165,8 +169,7 @@ public class MainActivity extends AppCompatActivity implements TaskCompleted{
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        String url = "http://103.15.245.78:8023/scl_tracker_api/public/api/update_location";
-                        Update params = new Update(url,PHONE,latitude,longitude,geolocation);
+                        Update params = new Update(UPDATE_URL,PHONE,latitude,longitude,geolocation);
                         Intent serviceIntent = new Intent(getApplicationContext(),AppService.class);
                         serviceIntent.putExtra("Parcelable",params);
                         //handler.postDelayed(timedTask,10000);
@@ -208,7 +211,6 @@ public class MainActivity extends AppCompatActivity implements TaskCompleted{
         String messageToSend = "Current Position of User ID "+getUserLocation.getId()+
                 "("+getUserLocation.getPhone()+")"+" is "+getUserLocation.getGeolocation()+
                 "(Latitude :"+getUserLocation.getLat()+" , Longitude :"+getUserLocation.getLon()+")";
-        String number = "01872796633";
-        SmsManager.getDefault().sendTextMessage(number, null, messageToSend, null,null);
+        SmsManager.getDefault().sendTextMessage(ADMIN_PHONE, null, messageToSend, null,null);
     }
 }

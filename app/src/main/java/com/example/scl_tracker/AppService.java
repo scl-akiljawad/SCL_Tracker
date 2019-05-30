@@ -14,7 +14,6 @@ import android.widget.Toast;
 import static com.example.scl_tracker.App.CHANNEL_ID;
 
 public class AppService extends Service {
-    Handler handler = new Handler();
 
     @Override
     public void onCreate() {
